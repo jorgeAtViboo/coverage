@@ -29,13 +29,14 @@ export function parseCoverageReport(report: string, diffReport: string, files: C
 
   const source = core.getInput('sourceDir') || parseSource(report)
   const threshModified = parseFloat(core.getInput('thresholdModified'))
+  const threshNew = parseFloat(core.getInput('thresholdNew'))
   let modifiedCover: Coverage[] | undefined
   if (diffReport === '') {
     modifiedCover = parseFilesCoverage(report, source, files.modifiedFiles, threshModified)
   } else {
-    modifiedCover = parseFilesCoverage(diffReport, source, files.modifiedFiles, threshModified)
+    modifiedCover = parseDiffCoverageReport(diffReport, files.modifiedFiles, threshModified)
+    core.info(`modifiedCover: ${JSON.stringify(modifiedCover)}`)
   }
-  const threshNew = parseFloat(core.getInput('thresholdNew'))
   const newCover = parseFilesCoverage(report, source, files.newFiles, threshNew)
   return {averageCover: avgCover, newCover, modifiedCover}
 }
@@ -62,15 +63,15 @@ export function parseFilesCoverage(
 
 export function parseDiffCoverageReport(
   report: string,
-  source: string,
   files: string[] | undefined,
   threshold: number
 ): Coverage[] | undefined {
   const jsonReport = JSON.parse(report)
   const coverages = files?.map(file => {
-    const fileName = escapeRegExp(file.replace(`${source}/`, ''))
-    const fileReport = jsonReport.src_stats[fileName]
-    const cover = fileReport?.percent_covered ?? -1
+    const fileReport = jsonReport.src_stats[file]
+    const cover = fileReport?.percent_covered ? fileReport.percent_covered / 100 : -1
+    core.info(`file: ${file} cover: ${cover}`)
+    core.info(jsonReport.src_stats)
     return {file, cover, pass: cover >= threshold}
   })
   return coverages?.filter(cover => cover.cover >= 0)
