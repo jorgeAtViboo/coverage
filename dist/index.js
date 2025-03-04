@@ -121,7 +121,7 @@ function parseCoverageReport(report, diffReport, files) {
         modifiedCover = parseFilesCoverage(report, source, files.modifiedFiles, threshModified);
     }
     else {
-        modifiedCover = parseDiffCoverageReport(diffReport, source, files.modifiedFiles, threshModified);
+        modifiedCover = parseDiffCoverageReport(diffReport, files.modifiedFiles, threshModified);
         core.info(`modifiedCover: ${JSON.stringify(modifiedCover)}`);
     }
     const newCover = parseFilesCoverage(report, source, files.newFiles, threshNew);
@@ -142,13 +142,14 @@ function parseFilesCoverage(report, source, files, threshold) {
     return coverages === null || coverages === void 0 ? void 0 : coverages.filter(cover => cover.cover >= 0);
 }
 exports.parseFilesCoverage = parseFilesCoverage;
-function parseDiffCoverageReport(report, source, files, threshold) {
+function parseDiffCoverageReport(report, files, threshold) {
     const jsonReport = JSON.parse(report);
     const coverages = files === null || files === void 0 ? void 0 : files.map(file => {
         var _a;
-        const fileName = escapeRegExp(file.replace(`${source}/`, ''));
-        const fileReport = jsonReport.src_stats[fileName];
+        const fileReport = jsonReport.src_stats[file];
         const cover = (_a = fileReport === null || fileReport === void 0 ? void 0 : fileReport.percent_covered) !== null && _a !== void 0 ? _a : -1;
+        core.info(`file: ${file} cover: ${cover}`);
+        core.info(jsonReport.src_stats);
         return { file, cover, pass: cover >= threshold };
     });
     return coverages === null || coverages === void 0 ? void 0 : coverages.filter(cover => cover.cover >= 0);
