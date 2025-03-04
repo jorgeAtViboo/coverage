@@ -29,13 +29,14 @@ export function parseCoverageReport(report: string, diffReport: string, files: C
 
   const source = core.getInput('sourceDir') || parseSource(report)
   const threshModified = parseFloat(core.getInput('thresholdModified'))
+  const threshNew = parseFloat(core.getInput('thresholdNew'))
   let modifiedCover: Coverage[] | undefined
   if (diffReport === '') {
     modifiedCover = parseFilesCoverage(report, source, files.modifiedFiles, threshModified)
   } else {
-    modifiedCover = parseFilesCoverage(diffReport, source, files.modifiedFiles, threshModified)
+    modifiedCover = parseDiffCoverageReport(diffReport, source, files.modifiedFiles, threshModified)
+    core.info(`modifiedCover: ${JSON.stringify(modifiedCover)}`)
   }
-  const threshNew = parseFloat(core.getInput('thresholdNew'))
   const newCover = parseFilesCoverage(report, source, files.newFiles, threshNew)
   return {averageCover: avgCover, newCover, modifiedCover}
 }
