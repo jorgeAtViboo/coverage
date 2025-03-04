@@ -334,7 +334,8 @@ function run() {
             const head = pull_request === null || pull_request === void 0 ? void 0 : pull_request.head.sha;
             core.info(`comparing commits: base ${base} <> head ${head}`);
             const files = yield (0, compareCommits_1.compareCommits)(base, head);
-            core.info(`can you see me ? git new files: ${JSON.stringify(files.newFiles)} modified files: ${JSON.stringify(files.modifiedFiles)}`);
+            core.info(`I introduce a change in indexedDB.ts`);
+            core.info(`git new files: ${JSON.stringify(files.newFiles)} modified files: ${JSON.stringify(files.modifiedFiles)}`);
             const report = (0, readFile_1.default)(coverageFile);
             const diffReport = (0, readFile_1.default)(diffCoverageFile);
             const filesCoverage = (0, coverage_1.parseCoverageReport)(report, diffReport, files);
