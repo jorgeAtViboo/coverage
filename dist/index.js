@@ -145,9 +145,8 @@ exports.parseFilesCoverage = parseFilesCoverage;
 function parseDiffCoverageReport(report, files, threshold) {
     const jsonReport = JSON.parse(report);
     const coverages = files === null || files === void 0 ? void 0 : files.map(file => {
-        var _a;
         const fileReport = jsonReport.src_stats[file];
-        const cover = (_a = fileReport === null || fileReport === void 0 ? void 0 : fileReport.percent_covered) !== null && _a !== void 0 ? _a : -1;
+        const cover = (fileReport === null || fileReport === void 0 ? void 0 : fileReport.percent_covered) ? fileReport.percent_covered / 100 : -1;
         core.info(`file: ${file} cover: ${cover}`);
         core.info(jsonReport.src_stats);
         return { file, cover, pass: cover >= threshold };

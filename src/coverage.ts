@@ -69,7 +69,7 @@ export function parseDiffCoverageReport(
   const jsonReport = JSON.parse(report)
   const coverages = files?.map(file => {
     const fileReport = jsonReport.src_stats[file]
-    const cover = fileReport?.percent_covered ?? -1
+    const cover = fileReport?.percent_covered ? fileReport.percent_covered / 100 : -1
     core.info(`file: ${file} cover: ${cover}`)
     core.info(jsonReport.src_stats)
     return {file, cover, pass: cover >= threshold}
