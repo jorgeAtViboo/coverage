@@ -8,10 +8,10 @@ import readFile from './readFile'
 async function run(): Promise<void> {
   try {
     const coverageFile: string = core.getInput('coverageFile', {required: true})
-    core.debug(`coverageFile: ${coverageFile}`)
+    core.info(`coverageFile: ${coverageFile}`)
 
-    const diffCoverageFile: string = core.getInput('diffCoverageFile', {required: true})
-    core.debug(`diffCoverageFile: ${diffCoverageFile}`)
+    const diffCoverageFile: string = core.getInput('diffCoverageFile')
+    core.info(`diffCoverageFile: ${diffCoverageFile}`)
 
     const eventName = context.eventName
     if (eventName !== 'pull_request') {
