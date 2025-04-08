@@ -45,9 +45,9 @@ describe('tests', () => {
   it('parses coverage diff', () => {
     const report = fs.readFileSync(coverageDiffFilePath, 'utf8')
     const parsed = parseDiffCoverageReport(report, ['src/coverage.ts'], 0.8)
+    const expected = [{file: 'src/coverage.ts', cover: 0.69, pass: false}]
+
     expect(parsed).toBeDefined()
-    expect(parsed![0]).toBeDefined()
-    expect(parsed![0].pass).toBeFalsy()
-    expect(parsed![0].cover).toBe(0.69)
+    expect(parsed).toEqual(expected)
   })
 })
