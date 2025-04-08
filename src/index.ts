@@ -8,10 +8,10 @@ import readFile from './readFile'
 async function run(): Promise<void> {
   try {
     const coverageFile: string = core.getInput('coverageFile', {required: true})
-    core.info(`coverageFile: ${coverageFile}`)
+    core.debug(`coverageFile: ${coverageFile}`)
 
     const diffCoverageFile: string = core.getInput('diffCoverageFile')
-    core.info(`diffCoverageFile: ${diffCoverageFile}`)
+    core.debug(`diffCoverageFile: ${diffCoverageFile}`)
 
     const eventName = context.eventName
     if (eventName !== 'pull_request') {
@@ -24,7 +24,6 @@ async function run(): Promise<void> {
 
     core.info(`comparing commits: base ${base} <> head ${head}`)
     const files = await compareCommits(base, head)
-    core.info(`I introduce a change in indexedDB.ts`)
     core.info(`git new files: ${JSON.stringify(files.newFiles)} modified files: ${JSON.stringify(files.modifiedFiles)}`)
 
     const report = readFile(coverageFile)

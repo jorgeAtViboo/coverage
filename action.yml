@@ -30,5 +30,5 @@ runs:
   using: 'node20'
   main: 'dist/index.js'
 branding:
-  icon: 'umbrella'
-  color: 'purple'
+   icon: 'umbrella'
+   color: 'purple'
