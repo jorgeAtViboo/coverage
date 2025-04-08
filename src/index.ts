@@ -28,7 +28,7 @@ async function run(): Promise<void> {
 
     const report = readFile(coverageFile)
     const diffReport = readFile(diffCoverageFile)
-    const filesCoverage = parseCoverageReport(report, diffReport, files)
+    const filesCoverage = parseCoverageReport(report, files, diffReport)
     const passOverall = scorePr(filesCoverage)
 
     if (!passOverall) {

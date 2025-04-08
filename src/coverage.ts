@@ -23,7 +23,7 @@ export type FilesCoverage = {
   modifiedCover?: Coverage[]
 }
 
-export function parseCoverageReport(report: string, diffReport: string, files: CommitsComparison): FilesCoverage {
+export function parseCoverageReport(report: string, files: CommitsComparison, diffReport: string): FilesCoverage {
   const threshAll = parseFloat(core.getInput('thresholdAll'))
   const avgCover = parseAverageCoverage(report, threshAll)
 
