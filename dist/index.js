@@ -110,7 +110,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.parseAverageCoverage = exports.parseSource = exports.parseDiffCoverageReport = exports.parseFilesCoverage = exports.parseCoverageReport = void 0;
 const core = __importStar(__nccwpck_require__(2186));
-function parseCoverageReport(report, diffReport, files) {
+function parseCoverageReport(report, files, diffReport) {
     const threshAll = parseFloat(core.getInput('thresholdAll'));
     const avgCover = parseAverageCoverage(report, threshAll);
     const source = core.getInput('sourceDir') || parseSource(report);
@@ -322,9 +322,9 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const coverageFile = core.getInput('coverageFile', { required: true });
-            core.info(`coverageFile: ${coverageFile}`);
+            core.debug(`coverageFile: ${coverageFile}`);
             const diffCoverageFile = core.getInput('diffCoverageFile');
-            core.info(`diffCoverageFile: ${diffCoverageFile}`);
+            core.debug(`diffCoverageFile: ${diffCoverageFile}`);
             const eventName = github_1.context.eventName;
             if (eventName !== 'pull_request') {
                 core.info(`action support only pull requests but event is ${eventName}`);
@@ -335,11 +335,10 @@ function run() {
             const head = pull_request === null || pull_request === void 0 ? void 0 : pull_request.head.sha;
             core.info(`comparing commits: base ${base} <> head ${head}`);
             const files = yield (0, compareCommits_1.compareCommits)(base, head);
-            core.info(`I introduce a change in indexedDB.ts`);
             core.info(`git new files: ${JSON.stringify(files.newFiles)} modified files: ${JSON.stringify(files.modifiedFiles)}`);
             const report = (0, readFile_1.default)(coverageFile);
             const diffReport = (0, readFile_1.default)(diffCoverageFile);
-            const filesCoverage = (0, coverage_1.parseCoverageReport)(report, diffReport, files);
+            const filesCoverage = (0, coverage_1.parseCoverageReport)(report, files, diffReport);
             const passOverall = (0, scorePr_1.scorePr)(filesCoverage);
             if (!passOverall) {
                 core.setFailed('Coverage is lower than configured threshold 😭');
