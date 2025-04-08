@@ -3,7 +3,7 @@
     "diff_name": "origin/develop...HEAD, staged and unstaged changes",
     "src_stats": {
         "src/coverage.ts": {
-            "percent_covered": 69.9090909090909,
+            "percent_covered": 69,
             "violation_lines": [],
             "covered_lines": [
                 12,
