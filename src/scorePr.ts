@@ -7,7 +7,7 @@ import {octokit} from './client'
 
 const TITLE = `# ☂️ Python Coverage`
 
-export async function publishMessage(pr: number, message: string): Promise {
+export async function publishMessage(pr: number, message: string): Promise<void> {
   const body = TITLE.concat(message)
   core.summary.addRaw(body).write()
 
@@ -56,7 +56,7 @@ export async function publishMessage(pr: number, message: string): Promise {
   }
 }
 
-export function scorePr(filesCover: FilesCoverage): boolean {
+export async function scorePr(filesCover: FilesCoverage): Promise<boolean> {
   let message = ''
   let passOverall = true
 
@@ -90,7 +90,7 @@ export function scorePr(filesCover: FilesCoverage): boolean {
   const action = '[action](https://github.com/marketplace/actions/python-coverage)'
   message = message.concat(`\n\n\n> **updated for commit: \`${sha}\` by ${action}🐍**`)
   message = `\n> current status: ${passOverall ? '✅' : '❌'}`.concat(message)
-  publishMessage(context.issue.number, message)
+  await publishMessage(context.issue.number, message)
   core.endGroup()
 
   return passOverall
