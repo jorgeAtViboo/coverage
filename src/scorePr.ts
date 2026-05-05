@@ -86,12 +86,22 @@ export async function scorePr(filesCover: FilesCoverage): Promise<boolean> {
     message = message.concat(`\n## Modified Files\nNo covered modified files...`)
     core.info('No covered modified files in this PR ')
   }
-  const sha = context.payload.pull_request?.head.sha.slice(0, 7)
-  const action = '[action](https://github.com/marketplace/actions/python-coverage)'
-  message = message.concat(`\n\n\n> **updated for commit: \`${sha}\` by ${action}🐍**`)
-  message = `\n> current status: ${passOverall ? '✅' : '❌'}`.concat(message)
-  await publishMessage(context.issue.number, message)
-  core.endGroup()
+  try {
+    const sha = context.payload.pull_request?.head.sha.slice(0, 7)
+    const action = '[action](https://github.com/marketplace/actions/python-coverage)'
+    message = message.concat(`\n\n\n> **updated for commit: \`${sha}\` by ${action}🐍**`)
+    message = `\n> current status: ${passOverall ? '✅' : '❌'}`.concat(message)
+    await publishMessage(context.issue.number, message)
+    core.endGroup()
+  } catch (error) {
+    core.error(`Failed to publish message: ${error}`)
+    if (error instanceof Error) {
+      core.error(`Error name: ${error.name}`)
+      core.error(`Error message: ${error.message}`)
+      core.error(`Error stack: ${error.stack}`)
+    }
+    throw error
+  }
 
   return passOverall
 }
