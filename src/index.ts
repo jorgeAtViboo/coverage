@@ -5,7 +5,7 @@ import {compareCommits} from './compareCommits'
 import {scorePr} from './scorePr'
 import readFile from './readFile'
 
-async function run(): Promise {
+async function run(): Promise<void> {
   try {
     const coverageFile: string = core.getInput('coverageFile', {required: true})
     core.debug(`coverageFile: ${coverageFile}`)
@@ -29,6 +29,7 @@ async function run(): Promise {
     const report = readFile(coverageFile)
     const diffReport = readFile(diffCoverageFile)
     const filesCoverage = parseCoverageReport(report, files, diffReport)
+    core.info(`Parsed coverage data`)
     const passOverall = await scorePr(filesCoverage)
     core.info(`overall pass: ${passOverall}`)
     if (!passOverall) {
