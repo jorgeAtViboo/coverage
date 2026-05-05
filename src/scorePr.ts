@@ -7,7 +7,7 @@ import {octokit} from './client'
 
 const TITLE = `# ☂️ Python Coverage`
 
-export async function publishMessage(pr: number, message: string): Promise<void> {
+export async function publishMessage(pr: number, message: string): Promise {
   const body = TITLE.concat(message)
   core.summary.addRaw(body).write()
 
@@ -15,8 +15,8 @@ export async function publishMessage(pr: number, message: string): Promise<void>
     ...context.repo,
     issue_number: pr
   })
-  const exist = comments.data.find(commnet => {
-    return commnet.body?.startsWith(TITLE)
+  const exist = comments.data.find((comment: (typeof comments.data)[number]) => {
+    return comment.body?.startsWith(TITLE)
   })
 
   if (exist) {
