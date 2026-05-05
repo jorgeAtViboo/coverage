@@ -5,7 +5,7 @@ import {compareCommits} from './compareCommits'
 import {scorePr} from './scorePr'
 import readFile from './readFile'
 
-async function run(): Promise<void> {
+async function run(): Promise {
   try {
     const coverageFile: string = core.getInput('coverageFile', {required: true})
     core.debug(`coverageFile: ${coverageFile}`)
@@ -30,7 +30,7 @@ async function run(): Promise<void> {
     const diffReport = readFile(diffCoverageFile)
     const filesCoverage = parseCoverageReport(report, files, diffReport)
     const passOverall = await scorePr(filesCoverage)
-
+    core.info(`overall pass: ${passOverall}`)
     if (!passOverall) {
       core.setFailed('Coverage is lower than configured threshold 😭')
     }

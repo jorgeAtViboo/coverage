@@ -8,6 +8,8 @@ import {octokit} from './client'
 const TITLE = `# ☂️ Python Coverage`
 
 export async function publishMessage(pr: number, message: string): Promise<void> {
+  core.info(`Publishing message`)
+  core.info(`Preparing to publish message to PR #${pr} in ${context.repo.owner}/${context.repo.repo}`)
   const body = TITLE.concat(message)
   core.summary.addRaw(body).write()
 
@@ -57,6 +59,7 @@ export async function publishMessage(pr: number, message: string): Promise<void>
 }
 
 export async function scorePr(filesCover: FilesCoverage): Promise<boolean> {
+  core.info('Scoring PR based on coverage data')
   let message = ''
   let passOverall = true
 
@@ -87,10 +90,13 @@ export async function scorePr(filesCover: FilesCoverage): Promise<boolean> {
     core.info('No covered modified files in this PR ')
   }
   try {
+    core.info('Attempting to publish results message')
     const sha = context.payload.pull_request?.head.sha.slice(0, 7)
+    core.info(`Current commit SHA: ${sha}`)
     const action = '[action](https://github.com/marketplace/actions/python-coverage)'
     message = message.concat(`\n\n\n> **updated for commit: \`${sha}\` by ${action}🐍**`)
     message = `\n> current status: ${passOverall ? '✅' : '❌'}`.concat(message)
+    core.info(`Publishing message: ${message}`)
     await publishMessage(context.issue.number, message)
     core.endGroup()
   } catch (error) {
