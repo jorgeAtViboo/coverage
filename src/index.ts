@@ -5,10 +5,13 @@ import {compareCommits} from './compareCommits'
 import {scorePr} from './scorePr'
 import readFile from './readFile'
 
-async function run(): Promise {
+async function run(): Promise<void> {
   try {
     const coverageFile: string = core.getInput('coverageFile', {required: true})
     core.debug(`coverageFile: ${coverageFile}`)
+
+    const diffCoverageFile: string = core.getInput('diffCoverageFile')
+    core.debug(`diffCoverageFile: ${diffCoverageFile}`)
 
     const eventName = context.eventName
     if (eventName !== 'pull_request') {
@@ -24,7 +27,8 @@ async function run(): Promise {
     core.info(`git new files: ${JSON.stringify(files.newFiles)} modified files: ${JSON.stringify(files.modifiedFiles)}`)
 
     const report = readFile(coverageFile)
-    const filesCoverage = parseCoverageReport(report, files)
+    const diffReport = readFile(diffCoverageFile)
+    const filesCoverage = parseCoverageReport(report, files, diffReport)
     const passOverall = await scorePr(filesCoverage)
 
     if (!passOverall) {
