@@ -7,7 +7,7 @@ import {octokit} from './client'
 
 const TITLE = `# ☂️ Python Coverage`
 
-export async function publishMessage(pr: number, message: string): Promise {
+export async function publishMessage(pr: number, message: string): Promise<void> {
   const body = TITLE.concat(message)
   core.summary.addRaw(body).write()
 
